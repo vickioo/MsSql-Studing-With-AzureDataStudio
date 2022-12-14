@@ -6,9 +6,10 @@ SELECT SUM(unallocated_extent_page_count) AS [free pages],
 SUM(user_object_reserved_page_count) AS [user object pages used],  
 (SUM(user_object_reserved_page_count)*1.0/128) AS [user object space in MB]  
 FROM sys.dm_db_file_space_usage;
+GO
 
 /* 数据库表文件空间使用情况 */
-USE master
+USE YH100
 GO
 --判断临时表是否存在，存在则删除重建
 if exists(select 1 from tempdb..sysobjects where id=object_id('tempdb..#tabName') and xtype='u')
