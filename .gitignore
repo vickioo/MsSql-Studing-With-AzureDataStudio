@@ -1,3 +1,7 @@
 # vic Special ignore
+# 本地用户类、数据文件类信息文件夹，屏蔽云端同步跟踪
+LocalUserSettings/
+
 UserCreateTemplate.csv
+
 # 
