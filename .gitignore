@@ -5,3 +5,8 @@ LocalUserSettings/
 UserCreateTemplate.csv
 
 # 
+
+# vscode
+.vscode
+
+#
