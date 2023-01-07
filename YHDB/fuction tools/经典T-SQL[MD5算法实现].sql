@@ -1,3 +1,6 @@
+USE YH100
+GO
+
 IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[MD5_m_OnBits]') AND xtype IN(N'FN', N'IF', N'TF'))
 DROP FUNCTION [dbo].[MD5_m_OnBits]
 GO
@@ -9,7 +12,7 @@ CREATE FUNCTION dbo.MD5_m_OnBits(
 @i TINYINT
 )
 RETURNS INT
-WITH ENCRYPTION
+-- WITH ENCRYPTION
 AS
 BEGIN
 DECLARE @iRes INT
@@ -62,7 +65,7 @@ CREATE FUNCTION dbo.MD5_m_2Power(
 @i TINYINT
 )
 RETURNS INT
-WITH ENCRYPTION
+-- WITH ENCRYPTION
 AS
 BEGIN
 DECLARE @iRes INT
@@ -116,7 +119,7 @@ CREATE FUNCTION dbo.MD5_LShift(
 ,@iShiftBits TINYINT
 )
 RETURNS INT
-WITH ENCRYPTION
+-- WITH ENCRYPTION
 AS
 BEGIN
 DECLARE @iRes BIGINT
@@ -137,7 +140,7 @@ CREATE FUNCTION dbo.MD5_RShift(
 ,@iShiftBits TINYINT
 )
 RETURNS INT
-WITH ENCRYPTION
+-- WITH ENCRYPTION
 AS
 BEGIN
 DECLARE @iRes BIGINT
@@ -158,7 +161,7 @@ CREATE FUNCTION dbo.MD5_RotateLeft(
 ,@iShiftBits TINYINT
 )
 RETURNS INT
-WITH ENCRYPTION
+-- WITH ENCRYPTION
 AS
 BEGIN
 RETURN(dbo.MD5_LShift(@ivalue, @iShiftBits) | dbo.MD5_RShift(@ivalue, (32 - @iShiftBits)))
@@ -176,7 +179,7 @@ CREATE FUNCTION dbo.MD5_AddUnsigned(
 ,@iY INT
 )
 RETURNS INT
-WITH ENCRYPTION
+-- WITH ENCRYPTION
 AS
 BEGIN
 DECLARE @iRes BIGINT
@@ -197,7 +200,7 @@ CREATE FUNCTION dbo.MD5_F(
 ,@z INT
 )
 RETURNS INT
-WITH ENCRYPTION
+-- WITH ENCRYPTION
 AS
 BEGIN
 RETURN((@x & @y) | ((~@x) & @z))
@@ -216,7 +219,7 @@ CREATE FUNCTION dbo.MD5_G(
 ,@z INT
 )
 RETURNS INT
-WITH ENCRYPTION
+-- WITH ENCRYPTION
 AS
 BEGIN
 RETURN((@x & @z) | (@y & (~@z)))
@@ -235,7 +238,7 @@ CREATE FUNCTION dbo.MD5_H(
 ,@z INT
 )
 RETURNS INT
-WITH ENCRYPTION
+-- WITH ENCRYPTION
 AS
 BEGIN
 RETURN(@x ^ @y ^ @z)
@@ -254,7 +257,7 @@ CREATE FUNCTION dbo.MD5_I(
 ,@z INT
 )
 RETURNS INT
-WITH ENCRYPTION
+-- WITH ENCRYPTION
 AS
 BEGIN
 RETURN(@y ^ (@x | (~@z)))
@@ -277,7 +280,7 @@ CREATE FUNCTION dbo.MD5_FF(
 ,@ac INT
 )
 RETURNS INT
-WITH ENCRYPTION
+-- WITH ENCRYPTION
 AS
 BEGIN
 SET @a = dbo.MD5_AddUnsigned(@a, dbo.MD5_AddUnsigned(dbo.MD5_AddUnsigned(dbo.MD5_F(@b, @c, @d), @x), @ac))
@@ -303,7 +306,7 @@ CREATE FUNCTION dbo.MD5_GG(
 ,@ac INT
 )
 RETURNS INT
-WITH ENCRYPTION
+-- WITH ENCRYPTION
 AS
 BEGIN
 SET @a = dbo.MD5_AddUnsigned(@a, dbo.MD5_AddUnsigned(dbo.MD5_AddUnsigned(dbo.MD5_G(@b, @c, @d), @x), @ac))
@@ -329,7 +332,7 @@ CREATE FUNCTION dbo.MD5_HH(
 ,@ac INT
 )
 RETURNS INT
-WITH ENCRYPTION
+-- WITH ENCRYPTION
 AS
 BEGIN
 SET @a = dbo.MD5_AddUnsigned(@a, dbo.MD5_AddUnsigned(dbo.MD5_AddUnsigned(dbo.MD5_H(@b, @c, @d), @x), @ac))
@@ -357,7 +360,7 @@ CREATE FUNCTION dbo.MD5_II(
 ,@ac INT
 )
 RETURNS INT
-WITH ENCRYPTION
+-- WITH ENCRYPTION
 AS
 BEGIN
 SET @a = dbo.MD5_AddUnsigned(@a, dbo.MD5_AddUnsigned(dbo.MD5_AddUnsigned(dbo.MD5_I(@b, @c, @d), @x), @ac))
@@ -377,7 +380,7 @@ CREATE FUNCTION dbo.MD5_ConvertToWordArray(
 @sOrigMess VARCHAR(8000) = ''
 )
 RETURNS @tWordArray TABLE([ID] INT IDENTITY(0,1),[Word] INT)
-WITH ENCRYPTION
+-- WITH ENCRYPTION
 AS
 BEGIN
 IF @sOrigMess IS NULL
@@ -428,7 +431,7 @@ CREATE FUNCTION dbo.MD5_WordToHex(
 @ivalue INT
 )
 RETURNS CHAR(8)
-WITH ENCRYPTION
+-- WITH ENCRYPTION
 AS
 BEGIN
 DECLARE @sRes VARCHAR(8)
@@ -489,7 +492,7 @@ CREATE FUNCTION dbo.MD5(
 @sOrigMess NVARCHAR(MAX)
 )
 RETURNS CHAR(32)
-WITH ENCRYPTION
+-- WITH ENCRYPTION
 AS
 BEGIN
 --====================================
@@ -615,27 +618,63 @@ GO
 
 --Test
 set nocount on
+
 select dbo.MD5('') as 'MD5('''')'
 union
 select 'd41d8cd98f00b204e9800998ecf8427e'
+
 select dbo.MD5('a') as 'MD5(''a'')'
 union
 select '0cc175b9c0f1b6a831c399e269772661'
+
 select dbo.MD5('abc') as 'MD5(''abc'')'
 union
 select '900150983cd24fb0d6963f7d28e17f72'
+
 select dbo.MD5('message digest') as 'MD5(''message digest'')'
 union
 select 'f96b697d7cb7938d525a2f31aaf161d0'
+
 select dbo.MD5('abcdefghijklmnopqrstuvwxyz') as 'MD5(''abcdefghijklmnopqrstuvwxyz'')'
 union
 select 'c3fcd3d76192e4007dfb496cca67e13b'
+
 select dbo.MD5('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789') as 'MD5(''ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'')'
 union
 select 'd174ab98d277d9f5a5611c2c9f419d9f'
+
 select dbo.MD5('12345678901234567890123456789012345678901234567890123456789012345678901234567890') as 'MD5(''12345678901234567890123456789012345678901234567890123456789012345678901234567890'')'
 union
 select '57edf4a22be3c955ac49da2e2107b67a'
+
 select dbo.MD5('我') as 'MD5(''我'')'
+union
+select 'a31d0f25367ebe046897f8a939ca4a9f'
+
+-- select * from YH100.dbo.test04
+select *, dbo.MD5(txt) as st_MD5
+,hashbytes('md5', convert(varchar,txt)) as hs_MD5_bin
+,dbo.MD5s(txt) as simple_MD5
+,checksum(txt) cs
+from YH100.dbo.bakuser_commtxt where name = 'vwtotab2'
+
+-- MD5simple版弱点对比测试：无法正确识别汉字与字节长度超8000内容
+select dbo.MD5s('', 32 ) as 'MD5('''')'
+union
+select 'd41d8cd98f00b204e9800998ecf8427e'
+
+select dbo.MD5s('a', 32 ) as 'MD5(''a'')'
+union
+select '0cc175b9c0f1b6a831c399e269772661'
+
+select dbo.MD5s('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789', 32 ) as 'MD5(''ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'')'
+union
+select 'd174ab98d277d9f5a5611c2c9f419d9f'
+
+select dbo.MD5s('12345678901234567890123456789012345678901234567890123456789012345678901234567890', 32 ) as 'MD5(''12345678901234567890123456789012345678901234567890123456789012345678901234567890'')'
+union
+select '57edf4a22be3c955ac49da2e2107b67a'
+
+select dbo.MD5s('我', 32 ) as 'MD5(''我'')'
 union
 select 'a31d0f25367ebe046897f8a939ca4a9f'
