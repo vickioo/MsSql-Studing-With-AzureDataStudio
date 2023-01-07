@@ -483,9 +483,10 @@ GO
 /*****************************************************************************
 * Name: MD5
 * Description: MD5
+* 为处理大文本校验解析，修改原版NVARCHAR(4000)为 MAX
 *****************************************************************************/
 CREATE FUNCTION dbo.MD5(
-@sOrigMess NVARCHAR(4000)
+@sOrigMess NVARCHAR(MAX)
 )
 RETURNS CHAR(32)
 WITH ENCRYPTION
