@@ -10,3 +10,4 @@ UserCreateTemplate.csv
 .vscode
 
 #
+*.xls*
