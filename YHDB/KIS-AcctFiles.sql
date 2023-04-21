@@ -11,12 +11,13 @@ FAcctNumber, FAcctName, FDBName
 )
 select top 100
     name,
-    (select sum(size) from fs where type = 0 and fs.database_id = db.database_id) DataFileSizeMB,
-    (select sum(size) from fs where type = 1 and fs.database_id = db.database_id) LogFileSizeMB
+    (select convert(decimal(10,2), sum(size)) from fs where type = 0 and fs.database_id = db.database_id) DataFileSizeGB,
+    (select CAST(sum(size) AS decimal(10,2)) from fs where type = 1 and fs.database_id = db.database_id) LogFileSizeGB
     , FAcctNumber, FAcctName
 from sys.databases db
 left join kis on name= FDBName
 where database_id > 4
-order by DataFileSizeMB desc
+-- and name = 'AIS20210222101523'
+order by DataFileSizeGB desc
 
 
