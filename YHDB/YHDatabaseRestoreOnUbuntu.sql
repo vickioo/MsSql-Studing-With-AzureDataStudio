@@ -1,0 +1,47 @@
+--select --database_id,
+--name, SName
+--from ( select 
+--			case when id is null then 'YH' + cast(KCode as varchar) else id end as Code,SName
+--		from [database].YH100.dbo.t_zt
+--		where KCode <100 or KCode >300
+--	) as zt
+--full join [database].master.sys.databases on Code=name
+----where Code is not null
+--order by Code
+--GO
+
+declare @t datetime, @t2 datetime
+declare @code nvarchar(8), @name nvarchar(10)
+declare curs insensitive cursor for
+select 
+	case when id is null then 'YH' + cast(KCode as varchar) else id end as Code,SName
+from [database].YH100.dbo.t_zt
+where KCode <100 or KCode >300;
+
+set @t = GETDATE()
+open curs
+fetch next from curs
+into @code, @name
+while @@FETCH_STATUS=0
+begin
+	--SET STATISTICS TIME ON
+	if @code > 'YH102' and @code < 'YH300'
+	begin
+		print '当前处理的是 ' + @code + '数据库: ' + @name + '账套, T-SQL语句为：'
+		print 'CREATE DATABASE [' + @code + '] ON'
+		print '  ( FILENAME = ''/mnt/0009DC270007488C/DBDATA/' + @code + '.mdf''),'
+		print '  ( FILENAME = ''/mnt/0009DC270007488C/DBDATA/' + @code + '_log.ldf'')'
+		print 'FOR ATTACH'
+		EXEC ( 'CREATE DATABASE [' + @code + '] ON'
+			+ '  ( FILENAME = N''/mnt/0009DC270007488C/DBDATA/' + @code + '.mdf''),'
+			+ '  ( FILENAME = N''/mnt/0009DC270007488C/DBDATA/' + @code + '_log.ldf'')'
+			+ 'FOR ATTACH' )
+		print '--执行耗时：' + cast(datediff(ms, @t, getdate()) as varchar)
+		set @t = getdate()
+		print ''
+	end
+	--SET STATISTICS TIME OFF
+	fetch next from curs into @code, @name
+end
+close curs
+deallocate curs
