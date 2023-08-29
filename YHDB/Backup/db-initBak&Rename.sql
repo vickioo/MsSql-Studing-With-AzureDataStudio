@@ -1,0 +1,42 @@
+/* 
+  Database主机新数据库基础备份归档，统一数据库实体名、逻辑名、文件名与存放磁盘位置规划
+ */
+BACKUP DATABASE [YH113] TO  
+DISK = N'D:\Kbak\kisbak0207\YH113.bak' 
+WITH NOFORMAT, NOINIT,  
+NAME = N'YH113-完整 数据库 备份', 
+SKIP, NOREWIND, NOUNLOAD, 
+COMPRESSION,  STATS = 10, CHECKSUM
+GO
+BACKUP DATABASE [YH115] TO  
+DISK = N'D:\Kbak\kisbak0207\YH115.bak' 
+WITH NOFORMAT, NOINIT,  
+NAME = N'YH115-完整 数据库 备份', 
+SKIP, NOREWIND, NOUNLOAD, 
+COMPRESSION,  STATS = 10, CHECKSUM
+GO
+-- scp database:/D:Kbak/kisbak0207/YH115.bak ./Kbak/kisbak1    
+BACKUP DATABASE [YH119] TO  
+DISK = N'D:\Kbak\kisbak0207\YH119.bak' 
+WITH NOFORMAT, NOINIT,  
+NAME = N'YH119-完整 数据库 备份', 
+SKIP, NOREWIND, NOUNLOAD, 
+COMPRESSION,  STATS = 10, CHECKSUM
+GO
+-- YH119库逻辑文件名：D:/DBDATA/Y[YH119].mdf
+-- YH119库逻辑文件名：C:/Program Files/Microsoft SQL Server/MSSQL11.MSSQLSERVER/MSSQL/DATA/YH113.mdf
+-- USE [YH113]
+-- GO
+-- ALTER DATABASE [YH113] MODIFY FILE (NAME=N'Y[YH113]', NEWNAME=N'YH113')
+-- GO
+-- ALTER DATABASE [YH113] MODIFY FILE (NAME=N'Y[YH113]_log', NEWNAME=N'YH113_log')
+-- GO
+USE [master]
+RESTORE DATABASE [YH113] 
+--FROM  DISK = N'D:\Kbak\kisbak0207\YH113.bak' 
+--WITH  FILE = 1,  
+MOVE N'YH113' TO N'D:\DBDATA\YH113.mdf',  -- 前期逻辑名有误，需更改时，参见上方注释块
+MOVE N'YH113_log' TO N'D:\DBDATA\YH113_log.ldf'  
+--NOUNLOAD,  STATS = 5
+GO
+
