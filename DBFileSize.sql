@@ -26,6 +26,7 @@ WHERE type IN (0,1);';
 SELECT *
 FROM #FileSize
 WHERE dbName NOT IN ('distribution', 'master', 'model', 'msdb')
-    AND FreeSpaceMB > 1;
+    AND FreeSpaceMB > 1
+ORDER BY [FileName];
 
 DROP TABLE #FileSize;
